@@ -1,9 +1,6 @@
-import React, { Component, useState } from 'react';
-import { render } from 'react-dom';
+import React, { Component } from 'react';
 import { Stage, Layer, Image, Text } from 'react-konva';
-import useImage from 'use-image'
-import Konva from 'konva';
-import { IonRange, IonButton, IonCardTitle, IonCardSubtitle, IonCardContent, IonCardHeader, IonSplitPane, IonRouterOutlet, IonMenu, IonText, IonSelect, IonSelectOption, IonRadioGroup, IonRadio, IonImg, IonThumbnail, IonCol, IonRow, IonGrid, IonCard, IonContent, IonHeader, IonPage, IonTitle, IonToolbar, IonInput, IonItem, IonLabel, IonList, IonItemDivider } from '@ionic/react';
+import { IonRange, IonButton, IonSelect, IonSelectOption, IonCard, IonHeader, IonTitle, IonToolbar, IonInput, IonItem, IonLabel } from '@ionic/react';
 
 
 export class PlayHeader extends Component {
@@ -19,7 +16,8 @@ export class PlayHeader extends Component {
 }
 
 export class Playx extends Component {
-
+  
+  bg = new window.Image(window.innerWidth,window.innerHeight)
   state = {
     newTextObj: {
       textEditVisible: false,
@@ -35,10 +33,10 @@ export class Playx extends Component {
       colorValue: "black"
     },
     bg: {
-      img: 'x'
+      src: 'https://sacrebleu-galerie.com/wp-content/uploads/2018/06/clean-white-brick-wall-textures-plain.jpg'
     }
   };
-
+  
   handleTextareaKeyDown = (e: any) => {
     if (e.keyCode === 13) {
       let { newTextObj } = this.state;
@@ -50,16 +48,12 @@ export class Playx extends Component {
     }
   };
 
-
   handleCloseButton = () => {
-
     let { newTextObj } = this.state;
-
     newTextObj.textEditVisible = false;
     this.setState({
       newTextObj
     });
-
   };
 
   handleTextEdit = (e: any) => {
@@ -96,9 +90,7 @@ export class Playx extends Component {
     });
   };
   render() {
-    const url = 'https://sacrebleu-galerie.com/wp-content/uploads/2018/06/clean-white-brick-wall-textures-plain.jpg';
-    const image = new window.Image();
-    image.src = url
+    this.bg.src = this.state.bg.src;
     return (
       <div>
         <PlayHeader />
@@ -106,8 +98,10 @@ export class Playx extends Component {
           style={{
             display: this.state.newTextObj.textEditVisible ? "block" : "none",
             position: "absolute",
-            top: this.state.newTextObj.textY + "px",
-            left: this.state.newTextObj.textX + "px"
+            // top: this.state.newTextObj.textY + "px",
+            // left: this.state.newTextObj.textX + "px"
+            bottom: "5vh",
+
           }}
         >
           <IonItem>
@@ -155,10 +149,9 @@ export class Playx extends Component {
         </IonCard>
         <Stage width={window.innerWidth} height={window.innerHeight}>
           <Layer>
-            <Image image={image} />
+            <Image image={this.bg}/>
             <Text
               fontSize={this.state.newTextObj.sizeValue}
-              align={"center"}
               draggable
               text={this.state.newTextObj.textValue}
               x={100}
