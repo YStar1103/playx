@@ -1,18 +1,17 @@
 import React, { Component } from 'react';
 import { Stage, Layer, Image, Text } from 'react-konva';
-import { IonRange, IonIcon, IonSelect, IonSelectOption, IonCard, IonHeader, IonTitle, IonToolbar, IonInput, IonItem, IonLabel, IonButtons, IonButton } from '@ionic/react';
-import { createOutline } from 'ionicons/icons';
-
+import { IonRange, IonIcon, IonSelect, IonSelectOption, IonCard, IonHeader, IonTitle, IonToolbar, IonInput, IonItem, IonLabel, IonButtons, IonButton, IonPage, IonFooter, IonBadge} from '@ionic/react';
+import { createOutline, expandOutline } from 'ionicons/icons';
+import './playx.css'
 export class Playx extends Component {
 
-  bg = new window.Image(window.innerWidth, window.innerHeight)
+  bg = new window.Image()
   state = {
     textTitle: {
     textEditVisible: false,
-    textX: 0,
-    textY: 0,
+    textX: 10,
+    textY: 10,
     textValue: "Hello",
-    width: window.innerWidth,
     fontStyle: "normal",
     align: "center",
     id: 0,
@@ -21,9 +20,28 @@ export class Playx extends Component {
   },
     bg: {
       src: 'https://sacrebleu-galerie.com/wp-content/uploads/2018/06/clean-white-brick-wall-textures-plain.jpg'
+    },
+    canvas: {
+      size: {
+        height: window.innerHeight,
+        width: window.innerWidth
+      }
     }
   };
 
+     updateWindowSize() {
+       console.log(window.innerHeight)
+       let canvas = this.state.canvas
+       let textTitle = this.state.textTitle
+       canvas.size = { height: window.innerHeight, width: window.innerWidth}
+       textTitle.textX = 10
+       textTitle.textY = 10
+       this.setState({
+         canvas: canvas,
+         textTitle: textTitle,
+       })
+     }
+  
   handleTextareaKeyDown = (e: any) => {
     if (e.keyCode === 13) {
           let {textTitle} = this.state;
@@ -66,30 +84,53 @@ export class Playx extends Component {
           textTitle
         });
   };
-  handleTextClick = (e: any) => {
-    let absPos = {x: 0 , y: 0}
+  handleTextClick = () => {
+    let position = {x: 10 , y: 10}
     let { textTitle} = this.state;
     if (!textTitle.textEditVisible) {
       textTitle.textEditVisible = true;
     } else {
       textTitle.textEditVisible = false;
     }
-    textTitle.textX = absPos.x;
-    textTitle.textY = absPos.y;
+    textTitle.textX = position.x;
+    textTitle.textY = position.y;
     this.setState({
           textTitle
-        });
+        })
   };
   render() {
           this.bg.src = this.state.bg.src;
     return (
-        <div>
+        <IonPage>
+          <Stage width={this.state.canvas.size.width} height={this.state.canvas.size.height} scaleX={1} scaleY={1}>
+            <Layer>
+              <Image width={this.state.canvas.size.width} height={this.state.canvas.size.height} image={this.bg} />
+              <Text
+                fontSize={this.state.textTitle.sizeValue}
+                draggable
+                text={this.state.textTitle.textValue}
+                shadowColor={this.state.textTitle.colorValue}
+                shadowBlur={20}
+                shadowOpacity={0.8}
+                opacity={0.6}
+                x={this.state.textTitle.textX}
+                y={this.state.textTitle.textY}
+                wrap="word"
+                fill={this.state.textTitle.colorValue}
+                onClick={ () => this.handleTextClick()}
+              />
+            </Layer>
+          </Stage>
+
           <IonHeader>
         <IonToolbar>
           <IonTitle>PlayX Demo</IonTitle>
           <IonButtons slot="primary">
-            <IonButton onClick={(e)=> {this.handleTextClick(e)}} color="danger">
-              <IonIcon slot="end" icon={createOutline} />
+            <IonButton onClick={()=> {this.handleTextClick()}} color="danger">
+              <IonIcon class="pointer" slot="end" icon={createOutline} />
+            </IonButton>
+            <IonButton onClick={()=> {this.updateWindowSize()}} color="danger">
+              <IonIcon class="pointer" slot="end" icon={expandOutline} />
             </IonButton>
           </IonButtons>
         </IonToolbar>
@@ -98,9 +139,8 @@ export class Playx extends Component {
           <IonCard
             style={{
               display: this.state.textTitle.textEditVisible ? "block" : "none",
-              position: "absolute",
-              bottom: "5vh",
-
+              position: "fixed",
+              bottom: "10vh",
             }}
           >
             <IonItem>
@@ -119,9 +159,6 @@ export class Playx extends Component {
                 value={this.state.textTitle.sizeValue}
                 min={64}
                 max={250}
-                step={2}
-                pin={true}
-                snaps={true}
                 onIonChange={e => this.handleSizeEdit(e)}
               />
             </IonItem>
@@ -146,23 +183,20 @@ export class Playx extends Component {
           </IonButton>
             </IonItem>
           </IonCard>
-          <Stage width={window.innerWidth} height={window.innerHeight}>
-            <Layer>
-              <Image image={this.bg} />
-              <Text
-                fontSize={this.state.textTitle.sizeValue}
-                draggable
-                text={this.state.textTitle.textValue}
-                x={100}
-                y={100}
-                wrap="word"
-                width={this.state.textTitle.width}
-                fill={this.state.textTitle.colorValue}
-                onClick={e => this.handleTextClick(e)}
-              />
-            </Layer>
-          </Stage>
-        </div>
+          <IonFooter 
+            style={{
+              width: this.state.canvas.size.width,
+              display: "block",
+              position: "fixed",
+              bottom: 0
+            } }
+          onClick={() => this.handleTextClick()}>
+            <IonItem>
+              <IonBadge slot="start">{this.state.textTitle.textValue}</IonBadge>
+              <IonBadge slot="end">Height: {this.state.textTitle.sizeValue} x Width: {this.state.textTitle.sizeValue}</IonBadge>
+            </IonItem>
+          </IonFooter>
+        </IonPage>
     );
   }
 }
